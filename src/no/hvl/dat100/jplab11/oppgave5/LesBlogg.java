@@ -17,12 +17,73 @@ import javax.swing.JOptionPane;
 
 public class LesBlogg {
 
+	private static String MAPPE = System.getProperty("user.dir") + "/src/no/hvl/dat100/tests/";
+
+	private static String FILNAVN = "bloggkorrect.dat";
+
 	private static String TEKST = "TEKST";
 	private static String BILDE = "BILDE";
 
-	public static Blogg les(String mappe, String filnavn) {
+	public static boolean isNumber(String str) {
+		try {
+			Double.parseDouble(str);
+			return true;
+		} catch (NumberFormatException e) {
+			return false;
+		}
 
-		throw new UnsupportedOperationException(TODO.method());
+	}
 
+	public static Blogg les(String mappe, String filnavn){
+
+		Blogg samling = new Blogg();
+		String file = MAPPE + FILNAVN;
+		
+		//reader
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(file));
+			
+			String firstLine = reader.readLine();
+			
+			
+			if(isNumber(firstLine)) {
+				samling = new Blogg(Integer.parseInt(firstLine));
+			}
+			String[] linje = new String[7];
+			Tekst innlegg1;
+			Bilde innlegg2;
+			
+			for(int j = 0; j < Integer.parseInt(firstLine); j++) {
+				if(reader.readLine().equals(TEKST)){
+					for(int i = 0; i < 4; i++) {
+						linje[i] = reader.readLine();
+						
+					}
+					innlegg1 = new Tekst(Integer.parseInt(linje[0]),linje[1],linje[2],Integer.parseInt(linje[3]),linje[4]);
+					samling.leggTil(innlegg1);
+				}else if(reader.readLine().equals(BILDE)){
+					for(int i = 0; i < 5; i++) {
+						linje[i] = reader.readLine();
+						
+					}
+					innlegg2 = new Bilde(Integer.parseInt(linje[0]),linje[1],linje[2],Integer.parseInt(linje[3]),linje[4],linje[5]);
+					samling.leggTil(innlegg2);
+				}else {
+					System.out.print("Mangler blogg type");
+				}
+			}
+			
+			
+			
+		} catch (FileNotFoundException e) {
+			System.out.println("file not found");
+		}catch (IOException e) {
+			System.out.println("error!");
+		}
+		
+		
+		
+		return samling;
+		
 	}
 }
